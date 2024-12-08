@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migration:create": "mikro-orm migration:create --config ./src/config/mikro-orm.config.ts",
     "migration:up": "mikro-orm migration:up --config ./src/config/mikro-orm.config.ts",
+    "migration:fresh": "mikro-orm migration:fresh --seed --config ./src/config/mikro-orm.config.ts",
     "seeder:run": "mikro-orm seeder:run --config ./src/config/mikro-orm.config.ts"
   },
   "dependencies": {

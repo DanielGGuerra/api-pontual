@@ -14,5 +14,13 @@ export class UsersSeeder extends Seeder {
       password: bcrypt.hashSync('123', process.env.BCRYPT_SALT ?? 12),
     });
     await em.insert(User, userAdmin);
+    const userNormal = em.create(User, {
+      activated: true,
+      email: 'normal@gmail.com.br',
+      profile: Profile.EMPLOYEE,
+      name: 'Daniel Guerra',
+      password: bcrypt.hashSync('123', process.env.BCRYPT_SALT ?? 12),
+    });
+    await em.insert(User, userNormal);
   }
 }
