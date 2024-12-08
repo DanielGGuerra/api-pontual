@@ -1,4 +1,5 @@
 import { Options } from '@mikro-orm/core';
+import { SeedManager } from '@mikro-orm/seeder';
 import { SqliteDriver } from '@mikro-orm/sqlite';
 
 export default {
@@ -6,4 +7,13 @@ export default {
   entitiesTs: ['./src/**/*.entity.{js,ts}'],
   dbName: 'pontual.sqllite3',
   driver: SqliteDriver,
+  extensions: [SeedManager],
+  seeder: {
+    path: './seeders',
+    pathTs: undefined,
+    defaultSeeder: 'DatabaseSeeder',
+    glob: '!(*.d).{js,ts}',
+    emit: 'ts',
+    fileName: (className: string) => className,
+  },
 } as Options;
