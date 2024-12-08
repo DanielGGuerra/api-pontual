@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthJwtGuard } from './auth.guard';
 import { BcryptModule } from '../bcrypt/bcrypt.module';
+import { ProfilesGuard } from './profiles.guard';
 
 @Module({
   imports: [
@@ -27,6 +28,10 @@ import { BcryptModule } from '../bcrypt/bcrypt.module';
     {
       provide: APP_GUARD,
       useClass: AuthJwtGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ProfilesGuard,
     },
   ],
   controllers: [AuthController],

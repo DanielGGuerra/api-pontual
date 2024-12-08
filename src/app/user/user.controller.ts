@@ -15,24 +15,29 @@ import { UpdateUserDTO } from './dtos/update-user.dto';
 import { FindUserDTO } from './dtos/find-user.dto';
 import { ResponseUserDTO } from './dtos/response-user.dto';
 import { PaginatedResponse } from 'src/classes/paginated-response';
+import { Profiles } from 'src/decorators/roles.decorator';
+import { Profile } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @Profiles(Profile.ADMIN)
   async create(@Body() createUser: CreateUserDTO): Promise<ResponseUserDTO> {
     const user = await this.userService.create(createUser);
     return new ResponseUserDTO(user);
   }
 
   @Get('/:id')
+  @Profiles(Profile.ADMIN)
   async find(@Param('id') id: string): Promise<ResponseUserDTO> {
     const user = await this.userService.find(id);
     return new ResponseUserDTO(user);
   }
 
   @Get()
+  @Profiles(Profile.ADMIN)
   async findAll(
     @Query() query: FindUserDTO,
   ): Promise<PaginatedResponse<ResponseUserDTO>> {
@@ -44,6 +49,7 @@ export class UserController {
   }
 
   @Patch(':id')
+  @Profiles(Profile.ADMIN)
   @HttpCode(HttpStatus.CREATED)
   async update(
     @Param('id') id: string,
