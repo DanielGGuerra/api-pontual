@@ -4,12 +4,14 @@ import { User } from '../user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { IJwt } from './interfaces/jwt.interface';
 import { ResponseUserDTO } from '../user/dtos/response-user.dto';
+import { BcryptService } from '../bcrypt/bcrypt.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly bcryptService: BcryptService,
   ) {}
 
   async singIn(email: string, password: string): Promise<IJwt> {
@@ -21,7 +23,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    if (user.password !== password) {
+    if (!(await this.bcryptService.compare(password, user.password))) {
       throw new UnauthorizedException();
     }
 

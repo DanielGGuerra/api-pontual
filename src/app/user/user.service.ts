@@ -11,6 +11,7 @@ import { UpdateUserDTO } from './dtos/update-user.dto';
 import { FindUserDTO } from './dtos/find-user.dto';
 import { ClsService } from 'nestjs-cls';
 import { CleanFilters } from 'src/classes/clean-filters';
+import { BcryptService } from '../bcrypt/bcrypt.service';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,7 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: EntityRepository<User>,
     private readonly clsService: ClsService,
+    private readonly bcryptService: BcryptService,
   ) {}
 
   async create(createUser: CreateUserDTO): Promise<User> {
@@ -30,6 +32,8 @@ export class UserService {
     }
 
     const user = this.userRepository.create(createUser);
+    user.password = await this.bcryptService.hash(user.password);
+
     await this.userRepository.insert(user);
 
     return user;

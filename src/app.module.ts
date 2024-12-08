@@ -10,6 +10,7 @@ import { TimeClockModule } from './app/time-clock/time-clock.module';
 import { AuthModule } from './app/auth/auth.module';
 import { ClsModule } from 'nestjs-cls';
 import { Request } from 'express';
+import { BcryptModule } from './app/bcrypt/bcrypt.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { Request } from 'express';
     UserModule,
     TimeClockModule,
     AuthModule,
+    BcryptModule,
   ],
   controllers: [],
   providers: [],
