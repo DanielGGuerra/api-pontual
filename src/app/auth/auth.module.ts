@@ -15,9 +15,9 @@ import { ProfilesGuard } from './profiles.guard';
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get('SECRET', 'develop'),
+        secret: configService.get('SECRET_JWT', 'develop'),
         signOptions: {
-          expiresIn: configService.get<string>('EXPIRES_IN', '1d'),
+          expiresIn: configService.get<string>('EXPIRES_IN_JWT', '1d'),
         },
       }),
     }),
