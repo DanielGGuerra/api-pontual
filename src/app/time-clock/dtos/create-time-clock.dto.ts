@@ -3,15 +3,10 @@ import {
   IsNotEmpty,
   IsNumberString,
   IsOptional,
-  IsString,
   MaxLength,
 } from 'class-validator';
 
 export class CreateTimeClockDTO {
-  @IsNotEmpty()
-  @IsString()
-  userId: string;
-
   @IsNotEmpty()
   @IsDateString()
   moment: string;

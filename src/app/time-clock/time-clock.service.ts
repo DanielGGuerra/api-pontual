@@ -6,12 +6,13 @@ import { CreateTimeClockDTO } from './dtos/create-time-clock.dto';
 import { addMinutes, endOfDay, isBefore, startOfDay } from 'date-fns';
 import { UserService } from '../user/user.service';
 import { ClsService } from 'nestjs-cls';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class TimeClockService {
   constructor(
     @InjectRepository(TimeClock)
-    private readonly timeClockRespository: EntityRepository<TimeClock>,
+    private readonly timeClockRepository: EntityRepository<TimeClock>,
     private readonly userService: UserService,
     private readonly clsService: ClsService,
   ) {}
@@ -24,10 +25,12 @@ export class TimeClockService {
       throw new BadRequestException(`moment register is before current time`);
     }
 
-    const timeClocks = await this.timeClockRespository.find(
+    const user = this.clsService.get<User>('user');
+
+    const timeClocks = await this.timeClockRepository.find(
       {
         user: {
-          publicId: createTimeClock.userId,
+          id: user.id,
         },
         moment: {
           $gte: startOfDay(moment),
@@ -59,23 +62,21 @@ export class TimeClockService {
       }
     });
 
-    const timeClock = this.timeClockRespository.create(createTimeClock);
+    const timeClock = this.timeClockRepository.create(createTimeClock);
 
     timeClock.type = type;
-
-    const user = await this.userService.find(createTimeClock.userId);
     timeClock.user = user;
 
-    await this.timeClockRespository.insert(timeClock);
-
+    await this.timeClockRepository.insert(timeClock);
     return timeClock;
   }
 
-  async findAll(userId: string): Promise<[TimeClock[], number]> {
-    return await this.timeClockRespository.findAndCount(
+  async findAll(): Promise<[TimeClock[], number]> {
+    const user = this.clsService.get<User>('user');
+    return await this.timeClockRepository.findAndCount(
       {
         user: {
-          publicId: userId,
+          id: user.id,
         },
       },
       {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { TimeClockService } from './time-clock.service';
 import { CreateTimeClockDTO } from './dtos/create-time-clock.dto';
 import { ResponseTimeClockDTO } from './dtos/response-time-clock.dto';
@@ -19,12 +19,10 @@ export class TimeClockController {
     return new ResponseTimeClockDTO(timeClock);
   }
 
-  @Get('/:userId')
+  @Get()
   @Profiles(Profile.EMPLOYEE)
-  async findAll(
-    @Param('userId') userId: string,
-  ): Promise<PaginatedResponse<ResponseTimeClockDTO>> {
-    const [timeClocks, total] = await this.timeClockService.findAll(userId);
+  async findAll(): Promise<PaginatedResponse<ResponseTimeClockDTO>> {
+    const [timeClocks, total] = await this.timeClockService.findAll();
     return new PaginatedResponse(
       timeClocks.map((timeClock) => new ResponseTimeClockDTO(timeClock)),
       total,
