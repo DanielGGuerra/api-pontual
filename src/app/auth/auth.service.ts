@@ -2,9 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
-import { IJwt } from './interfaces/jwt.interface';
 import { ResponseUserDTO } from '../user/dtos/response-user.dto';
 import { BcryptService } from '../bcrypt/bcrypt.service';
+import { ResponseJwtDTO } from './dtos/response-jwt.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +14,7 @@ export class AuthService {
     private readonly bcryptService: BcryptService,
   ) {}
 
-  async singIn(email: string, password: string): Promise<IJwt> {
+  async singIn(email: string, password: string): Promise<ResponseJwtDTO> {
     let user: User = null;
 
     try {

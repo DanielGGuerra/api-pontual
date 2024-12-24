@@ -17,6 +17,8 @@ import { ResponseUserDTO } from './dtos/response-user.dto';
 import { PaginatedResponse } from 'src/classes/paginated-response';
 import { Profiles } from 'src/decorators/roles.decorator';
 import { Profile } from './entities/user.entity';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiOkResponsePaginated } from 'src/decorators/api-ok-response-paginated.decorator';
 
 @Controller('user')
 export class UserController {
@@ -24,6 +26,7 @@ export class UserController {
 
   @Post()
   @Profiles(Profile.ADMIN)
+  @ApiCreatedResponse({ type: ResponseUserDTO })
   async create(@Body() createUser: CreateUserDTO): Promise<ResponseUserDTO> {
     const user = await this.userService.create(createUser);
     return new ResponseUserDTO(user);
@@ -31,6 +34,7 @@ export class UserController {
 
   @Get('/:id')
   @Profiles(Profile.ADMIN)
+  @ApiOkResponse({ type: ResponseUserDTO })
   async find(@Param('id') id: string): Promise<ResponseUserDTO> {
     const user = await this.userService.find(id);
     return new ResponseUserDTO(user);
@@ -38,6 +42,7 @@ export class UserController {
 
   @Get()
   @Profiles(Profile.ADMIN)
+  @ApiOkResponsePaginated(ResponseUserDTO)
   async findAll(
     @Query() query: FindUserDTO,
   ): Promise<PaginatedResponse<ResponseUserDTO>> {
@@ -51,6 +56,7 @@ export class UserController {
   @Patch(':id')
   @Profiles(Profile.ADMIN)
   @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({ type: ResponseUserDTO })
   async update(
     @Param('id') id: string,
     @Body() updateUser: UpdateUserDTO,

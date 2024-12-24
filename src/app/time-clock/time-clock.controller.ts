@@ -6,6 +6,8 @@ import { PaginatedResponse } from 'src/classes/paginated-response';
 import { Profiles } from 'src/decorators/roles.decorator';
 import { Profile } from '../user/entities/user.entity';
 import { FindAllParamsDto } from './dtos/find-all-params.dto';
+import { ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiOkResponsePaginated } from 'src/decorators/api-ok-response-paginated.decorator';
 
 @Controller('time-clock')
 export class TimeClockController {
@@ -13,6 +15,7 @@ export class TimeClockController {
 
   @Post()
   @Profiles(Profile.EMPLOYEE)
+  @ApiCreatedResponse({ type: ResponseTimeClockDTO })
   async create(
     @Body() createTimeClock: CreateTimeClockDTO,
   ): Promise<ResponseTimeClockDTO> {
@@ -22,6 +25,7 @@ export class TimeClockController {
 
   @Get()
   @Profiles(Profile.EMPLOYEE)
+  @ApiOkResponsePaginated(ResponseTimeClockDTO)
   async findAll(
     @Query() filter?: FindAllParamsDto,
   ): Promise<PaginatedResponse<ResponseTimeClockDTO>> {

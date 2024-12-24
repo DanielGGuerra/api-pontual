@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpStatus, ValidationPipe } from '@nestjs/common';
 import { NODE_ENV_TYPE } from './config/validation-schema';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +17,12 @@ async function bootstrap() {
     }),
   );
 
+  const config = new DocumentBuilder().setTitle('API PONTUAL').build();
+
+  SwaggerModule.setup('api', app, () =>
+    SwaggerModule.createDocument(app, config),
+  );
   await app.listen(process.env.PORT);
 }
+
 bootstrap();
