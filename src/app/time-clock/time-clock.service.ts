@@ -1,12 +1,13 @@
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { TimeClock, TypeTimeClock } from './entities/time-clock.entity';
-import { EntityRepository } from '@mikro-orm/core';
+import { EntityRepository, FilterQuery } from '@mikro-orm/core';
 import { CreateTimeClockDTO } from './dtos/create-time-clock.dto';
 import { addMinutes, endOfDay, isBefore, startOfDay } from 'date-fns';
 import { UserService } from '../user/user.service';
 import { ClsService } from 'nestjs-cls';
 import { User } from '../user/entities/user.entity';
+import { FindAllParamsDto } from './dtos/find-all-params.dto';
 
 @Injectable()
 export class TimeClockService {
@@ -71,21 +72,23 @@ export class TimeClockService {
     return timeClock;
   }
 
-  async findAll(): Promise<[TimeClock[], number]> {
+  async findAll(filter?: FindAllParamsDto): Promise<[TimeClock[], number]> {
     const user = this.clsService.get<User>('user');
-    return await this.timeClockRepository.findAndCount(
-      {
-        user: {
-          id: user.id,
-        },
+
+    const where: FilterQuery<TimeClock> = {
+      user: { id: user.id },
+      moment: {
+        $gte: filter.momentStart && new Date(filter.momentStart),
+        $lte: filter.momentEnd && new Date(filter.momentEnd),
       },
-      {
-        limit: this.clsService.get<number>('limit'),
-        offset: this.clsService.get<number>('offset'),
-        orderBy: {
-          id: 'desc',
-        },
+    };
+
+    return await this.timeClockRepository.findAndCount(where, {
+      limit: this.clsService.get<number>('limit'),
+      offset: this.clsService.get<number>('offset'),
+      orderBy: {
+        id: 'desc',
       },
-    );
+    });
   }
 }

@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { TimeClockService } from './time-clock.service';
 import { CreateTimeClockDTO } from './dtos/create-time-clock.dto';
 import { ResponseTimeClockDTO } from './dtos/response-time-clock.dto';
 import { PaginatedResponse } from 'src/classes/paginated-response';
 import { Profiles } from 'src/decorators/roles.decorator';
 import { Profile } from '../user/entities/user.entity';
+import { FindAllParamsDto } from './dtos/find-all-params.dto';
 
 @Controller('time-clock')
 export class TimeClockController {
@@ -21,8 +22,10 @@ export class TimeClockController {
 
   @Get()
   @Profiles(Profile.EMPLOYEE)
-  async findAll(): Promise<PaginatedResponse<ResponseTimeClockDTO>> {
-    const [timeClocks, total] = await this.timeClockService.findAll();
+  async findAll(
+    @Query() filter?: FindAllParamsDto,
+  ): Promise<PaginatedResponse<ResponseTimeClockDTO>> {
+    const [timeClocks, total] = await this.timeClockService.findAll(filter);
     return new PaginatedResponse(
       timeClocks.map((timeClock) => new ResponseTimeClockDTO(timeClock)),
       total,

@@ -8,6 +8,7 @@ export default {
   dbName: 'pontual.sqllite3',
   driver: SqliteDriver,
   extensions: [SeedManager],
+  ignoreUndefinedInQuery: true,
   seeder: {
     path: './seeders',
     pathTs: undefined,
